@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Agency Quote Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✈️ Travel Quote Generator</h1>
+            <p>Create professional travel package quotes instantly</p>
+        </div>
+
+        <div class="content">
+            <div class="input-section">
+                <h2>📝 Travel Details</h2>
+                
+                <div class="form-group">
+                    <label for="travelDates">Travel Dates</label>
+                    <input type="text" id="travelDates" placeholder="e.g., September 3 – 10, 2025">
+                </div>
+
+                <div class="form-group">
+                    <label>Number of Travelers</label>
+                    <div class="travelers-row">
+                        <div>
+                            <label for="adults">Adults</label>
+                            <input type="number" id="adults" min="1" value="2">
+                        </div>
+                        <div>
+                            <label for="children">Children</label>
+                            <input type="number" id="children" min="0" value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="flightPrice">Flight Price (Total USD)</label>
+                    <input type="number" id="flightPrice" placeholder="0" step="0.01">
+                </div>
+
+                <div id="hotelsContainer">
+                    <div class="hotel-section">
+                        <h3>🏨 Hotel Option 1</h3>
+                        <div class="hotel-row">
+                            <div>
+                                <label>Hotel Name</label>
+                                <input type="text" class="hotel-name" placeholder="e.g., Riande Urban Hotel">
+                            </div>
+                            <div>
+                                <label>Hotel Price (USD)</label>
+                                <input type="number" class="hotel-price" placeholder="0" step="0.01">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-add" onclick="addHotel()">+ Add Hotel Option</button>
+                <button class="btn" onclick="generateQuote()" style="margin-top: 20px; width: 100%;">Generate Quote</button>
+            </div>
+
+            <div class="output-section">
+                <h2>📊 Quote Results</h2>
+                <div id="results"></div>
+                <div id="quoteOutput"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
