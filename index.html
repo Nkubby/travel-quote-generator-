@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Travel Agency Quote Generator</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
@@ -19,7 +19,12 @@
                 
                 <div class="form-group">
                     <label for="travelDates">Travel Dates</label>
-                    <input type="text" id="travelDates" placeholder="e.g., September 3 – 10, 2025">
+                    <div class="date-picker-container">
+                        <input type="date" id="startDate" placeholder="Start Date">
+                        <span class="date-separator">to</span>
+                        <input type="date" id="endDate" placeholder="End Date">
+                    </div>
+                    <input type="text" id="travelDates" placeholder="Selected dates will appear here" readonly>
                 </div>
 
                 <div class="form-group">
@@ -47,7 +52,18 @@
                         <div class="hotel-row">
                             <div>
                                 <label>Hotel Name</label>
-                                <input type="text" class="hotel-name" placeholder="e.g., Riande Urban Hotel">
+                                <select class="hotel-dropdown">
+                                    <option value="">Select a hotel...</option>
+                                    <option value="Ramada by Wyndham Panama">Ramada by Wyndham Panama</option>
+                                    <option value="Riande Urban Hotel">Riande Urban Hotel</option>
+                                    <option value="The Executive Hotel">The Executive Hotel</option>
+                                    <option value="Marinn Place Financial District">Marinn Place Financial District</option>
+                                    <option value="Hotel Riu Plaza">Hotel Riu Plaza</option>
+                                    <option value="Holiday Inn Financial Distrito">Holiday Inn Financial Distrito</option>
+                                    <option value="Megapolis Hotel Panama">Megapolis Hotel Panama</option>
+                                    <option value="other">Other (Type manually)</option>
+                                </select>
+                                <input type="text" class="hotel-name" placeholder="Type hotel name here..." style="display: none;">
                             </div>
                             <div>
                                 <label>Hotel Price (USD)</label>
