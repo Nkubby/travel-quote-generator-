@@ -1,5 +1,62 @@
 let hotelCount = 1;
 
+// Date picker functionality
+function setupDatePickers() {
+    const startDate = document.getElementById('startDate');
+    const endDate = document.getElementById('endDate');
+    const travelDates = document.getElementById('travelDates');
+    
+    function updateTravelDates() {
+        if (startDate.value && endDate.value) {
+            const start = new Date(startDate.value);
+            const end = new Date(endDate.value);
+            
+            if (start > end) {
+                alert('End date must be after start date');
+                endDate.value = '';
+                return;
+            }
+            
+            const startFormatted = formatDate(start);
+            const endFormatted = formatDate(end);
+            
+            // Format: "Month Day – Day, Year" (e.g., "September 3 – 10, 2025")
+            if (start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear()) {
+                travelDates.value = `${startFormatted} – ${end.getDate()}, ${end.getFullYear()}`;
+            } else {
+                travelDates.value = `${startFormatted} – ${endFormatted}`;
+            }
+        }
+    }
+    
+    function formatDate(date) {
+        const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                       'July', 'August', 'September', 'October', 'November', 'December'];
+        return `${months[date.getMonth()]} ${date.getDate()}`;
+    }
+    
+    startDate.addEventListener('change', updateTravelDates);
+    endDate.addEventListener('change', updateTravelDates);
+}
+
+// Hotel dropdown functionality
+function setupHotelDropdowns() {
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('hotel-dropdown')) {
+            const dropdown = e.target;
+            const textInput = dropdown.parentElement.querySelector('.hotel-name');
+            
+            if (dropdown.value === 'other') {
+                textInput.style.display = 'block';
+                textInput.focus();
+            } else {
+                textInput.style.display = 'none';
+                textInput.value = '';
+            }
+        }
+    });
+}
+
 function addHotel() {
     if (hotelCount >= 5) {
         alert('Maximum 5 hotel options allowed');
@@ -15,7 +72,18 @@ function addHotel() {
         <div class="hotel-row">
             <div>
                 <label>Hotel Name</label>
-                <input type="text" class="hotel-name" placeholder="e.g., Riande Urban Hotel">
+                <select class="hotel-dropdown">
+                    <option value="">Select a hotel...</option>
+                    <option value="Ramada by Wyndham Panama">Ramada by Wyndham Panama</option>
+                    <option value="Riande Urban Hotel">Riande Urban Hotel</option>
+                    <option value="The Executive Hotel">The Executive Hotel</option>
+                    <option value="Marinn Place Financial District">Marinn Place Financial District</option>
+                    <option value="Hotel Riu Plaza">Hotel Riu Plaza</option>
+                    <option value="Holiday Inn Financial Distrito">Holiday Inn Financial Distrito</option>
+                    <option value="Megapolis Hotel Panama">Megapolis Hotel Panama</option>
+                    <option value="other">Other (Type manually)</option>
+                </select>
+                <input type="text" class="hotel-name" placeholder="Type hotel name here..." style="display: none;">
             </div>
             <div>
                 <label>Hotel Price (USD)</label>
@@ -71,10 +139,15 @@ function calculatePackage(flightPrice, hotelPrice, adults, children) {
     const subtotal2 = subtotal1 * 2.03;
     const subtotal3 = subtotal2 + (subtotal2 * 0.02);
     const totalPackageAmount = subtotal3 / 2;
-    const perPersonFee = totalPackageAmount / totalPeople;
+    
+    // Round UP to the nearest whole dollar
+    const roundedTotalPackageAmount = Math.ceil(totalPackageAmount);
+    
+    // Calculate per person fee using the rounded amount
+    const perPersonFee = roundedTotalPackageAmount / totalPeople;
     
     return {
-        totalPackageAmount: Math.round(totalPackageAmount * 100) / 100,
+        totalPackageAmount: roundedTotalPackageAmount,
         perPersonFee: Math.round(perPersonFee * 100) / 100
     };
 }
@@ -85,7 +158,8 @@ function generateQuote() {
     const children = parseInt(document.getElementById('children').value) || 0;
     const flightPrice = parseFloat(document.getElementById('flightPrice').value) || 0;
     
-    const hotelNames = document.querySelectorAll('.hotel-name');
+    const hotelDropdowns = document.querySelectorAll('.hotel-dropdown');
+    const hotelManualInputs = document.querySelectorAll('.hotel-name');
     const hotelPrices = document.querySelectorAll('.hotel-price');
     
     // Validation
@@ -96,9 +170,17 @@ function generateQuote() {
     
     // Calculate results for each hotel
     const results = [];
-    for (let i = 0; i < hotelNames.length; i++) {
-        const hotelName = hotelNames[i].value;
+    for (let i = 0; i < hotelDropdowns.length; i++) {
+        const dropdown = hotelDropdowns[i];
+        const manualInput = hotelManualInputs[i];
         const hotelPrice = parseFloat(hotelPrices[i].value) || 0;
+        
+        let hotelName = '';
+        if (dropdown.value === 'other') {
+            hotelName = manualInput.value.trim();
+        } else if (dropdown.value) {
+            hotelName = dropdown.value;
+        }
         
         if (hotelName && hotelPrice > 0) {
             const calculation = calculatePackage(flightPrice, hotelPrice, adults, children);
@@ -131,8 +213,8 @@ function displayResults(results) {
         html += `
             <div class="result-item">
                 <h4>${result.name}</h4>
-                <p><strong>Total Package:</strong> $${result.totalAmount.toFixed(2)}</p>
-                <p><strong>Per Person:</strong> $${result.perPerson.toFixed(2)}</p>
+                <p><strong>Total Package:</strong> ${result.totalAmount.toFixed(0)}</p>
+                <p><strong>Per Person:</strong> ${result.perPerson.toFixed(2)}</p>
             </div>
         `;
     });
@@ -150,7 +232,7 @@ function generateFormattedQuote(travelDates, adults, children, results) {
     
     let hotelOptionsText = '';
     results.forEach(result => {
-        hotelOptionsText += `${result.name}\n• $${result.totalAmount.toFixed(2)} ($${result.perPerson.toFixed(2)} per person)\n`;
+        hotelOptionsText += `${result.name}\n• ${result.totalAmount.toFixed(0)} (${result.perPerson.toFixed(2)} per person)\n`;
     });
     
     const quote = `Panama Getaway ✈️🌴
@@ -207,10 +289,25 @@ function copyQuote() {
 
 // Initialize with sample data
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('travelDates').value = 'September 3 – 10, 2025';
+    setupDatePickers();
+    setupHotelDropdowns();
+    
+    // Set sample dates
+    const today = new Date();
+    const nextMonth = new Date(today);
+    nextMonth.setMonth(today.getMonth() + 1);
+    const endDate = new Date(nextMonth);
+    endDate.setDate(endDate.getDate() + 7);
+    
+    document.getElementById('startDate').value = nextMonth.toISOString().split('T')[0];
+    document.getElementById('endDate').value = endDate.toISOString().split('T')[0];
+    
+    // Trigger the date update
+    document.getElementById('startDate').dispatchEvent(new Event('change'));
+    
     document.getElementById('adults').value = '2';
     document.getElementById('children').value = '0';
     document.getElementById('flightPrice').value = '800';
-    document.querySelector('.hotel-name').value = 'Riande Urban Hotel';
+    document.querySelector('.hotel-dropdown').value = 'Riande Urban Hotel';
     document.querySelector('.hotel-price').value = '600';
 });
