@@ -265,14 +265,13 @@ function validateForm() {
 }
 
 // Format date for display
-function formatDate(dateString) {
+function formatDateParts(dateString) {
     const date = new Date(dateString);
-    const options = { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    };
-    return date.toLocaleDateString('en-US', options);
+    const options = { month: 'long', day: 'numeric', year: 'numeric' };
+    const formatted = date.toLocaleDateString('en-US', options);
+    
+    const [monthDay, year] = formatted.split(', ');
+    return { monthDay, year };
 }
 
 // Calculate package details
@@ -326,9 +325,16 @@ function generateQuote() {
     const flightPrice = parseFloat(document.getElementById('flightPrice').value);
     
     // Format dates
-    const startFormatted = formatDate(startDate);
-    const endFormatted = formatDate(endDate);
-    const dateRange = `${startFormatted.split(',')[0]} – ${endFormatted.split(' ').pop()}, ${endFormatted.split(' ').pop()}`;
+    const { monthDay: startMonthDay, year: startYear } = formatDateParts(startDate);
+const { monthDay: endMonthDay, year: endYear } = formatDateParts(endDate);
+
+let dateRange;
+if (startYear === endYear) {
+    dateRange = `${startMonthDay} - ${endMonthDay}, ${startYear}`;
+} else {
+    dateRange = `${startMonthDay}, ${startYear} - ${endMonthDay}, ${endYear}`;
+}
+
     
     // Format travelers
     let travelerText = '';
