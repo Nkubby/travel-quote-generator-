@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Quote Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✈️ Travel Quote Generator 🌴</h1>
+            <p>Professional travel package quotes in seconds</p>
+        </div>
+
+        <div class="main-content">
+            <div class="form-section">
+                <h2 class="section-title">📋 Package Details</h2>
+                
+                <div class="form-group">
+                    <label>📅 Travel Dates</label>
+                    <div class="date-inputs">
+                        <div>
+                            <input type="date" id="startDate" required>
+                            <div class="error-message" id="startDateError"></div>
+                        </div>
+                        <div>
+                            <input type="date" id="endDate" required>
+                            <div class="error-message" id="endDateError"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>👥 Number of Travelers</label>
+                    <div class="people-inputs">
+                        <div>
+                            <input type="number" id="adults" placeholder="Adults" min="0" value="2">
+                            <div class="error-message" id="adultsError"></div>
+                        </div>
+                        <div>
+                            <input type="number" id="children" placeholder="Children" min="0" value="0">
+                            <div class="error-message" id="childrenError"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>✈️ Flight Price (USD)</label>
+                    <input type="number" id="flightPrice" placeholder="Enter flight cost" min="0" step="0.01">
+                    <div class="error-message" id="flightPriceError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>🏨 Hotel Options</label>
+                    <div id="hotelContainer">
+                        <!-- Hotel options will be dynamically added here -->
+                    </div>
+                    <button class="add-hotel-btn" onclick="addHotel()">+ Add Hotel Option</button>
+                </div>
+
+                <button class="generate-btn" onclick="generateQuote()">🎯 Generate Quote</button>
+            </div>
+
+            <div class="output-section">
+                <h2 class="section-title">📄 Generated Quote</h2>
+                <button class="copy-btn" onclick="copyToClipboard()">📋 Copy Quote</button>
+                <div class="output-content" id="quoteOutput">
+                    Click "Generate Quote" to create your travel package quote...
+                </div>
+                <div class="success-message" id="copySuccess">Quote copied to clipboard!</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
